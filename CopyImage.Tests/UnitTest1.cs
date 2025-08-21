@@ -9,7 +9,7 @@ namespace CopyImage.Tests
         public void TestMethod1()
         {
             string path = MainProcess.GenerateFileName(@"File1", "File2");
-            string expected = Path.Combine("File1", "File2");
+            string expected = "File1" + "File2";
             Assert.AreEqual(expected, path);
         }
     }

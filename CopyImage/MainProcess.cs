@@ -10,7 +10,7 @@ namespace CopyImage
     {
         public static string GenerateFileName(string target, string fileName)
         {
-            return Path.Combine(target, fileName);
+            return target + fileName;
         }
     }
 }

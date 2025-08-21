@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copyimage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: copyimage
+  template:
+    metadata:
+      labels:
+        app: copyimage
+    spec:
+      containers:
+      - name: copyimage
+        image: ac131151/copyimage:v1.0.0
+        imagePullPolicy: Always
+        env:
+        - name: DATA_PATH
+          value: "/data"  # container 內部的路徑
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data  # container 內部資料夾
+      volumes:
+      - name: data-volume
+        hostPath:
+          path: /run/desktop/mnt/host/d/test  # 映射本機 D:\test 資料夾
+          type: Directory
