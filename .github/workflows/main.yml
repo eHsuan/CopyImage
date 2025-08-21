@@ -1,13 +1,13 @@
-name: Full CI/CD to local K8s
+name: CI Build and Push to Docker Hub
 
 on:
   push:
     tags:
-      - 'v*'  # 例如 v1.0.0、v1.2.3
+      - 'v*'
 
 jobs:
   build-test-deploy:
-    runs-on: self-hosted  # 使用你本機的 runner
+    runs-on: ubuntu-latest
 
     steps:
     - name: 取得原始碼
@@ -27,16 +27,13 @@ jobs:
     - name: 執行單元測試
       run: dotnet test --no-build --verbosity normal
 
-    - name: Docker 建立映像檔並推送
-      run: |
-        $tag = "${{ github.ref_name }}"
-        $image = "yourdockerhubusername/yourapp:$tag"
-        docker build -t $image .
-        docker push $image
+    - name: 登入 Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: 部署至本機 Kubernetes
+    - name: 建立並推送映像檔
       run: |
-        $tag = "${{ github.ref_name }}"
-        $image = "yourdockerhubusername/yourapp:$tag"
-        kubectl set image deployment/your-deployment your-container=$image
-        kubectl rollout status deployment/your-deployment
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/copyimage:${{ github.ref_name }} .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/copyimage:${{ github.ref_name }}
