@@ -8,8 +8,8 @@ namespace CopyImage.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            string path = MainProcess.GenerateFileName(@"D:\", "File");
-            Assert.AreEqual(@"D:\File", path);
+            string path = MainProcess.GenerateFileName(@"D:\", "File2");
+            Assert.AreEqual(@"D:\File2", path);
         }
     }
 }
