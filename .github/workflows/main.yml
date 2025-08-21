@@ -1,0 +1,42 @@
+name: Full CI/CD to local K8s
+
+on:
+  push:
+    tags:
+      - 'v*'  # 例如 v1.0.0、v1.2.3
+
+jobs:
+  build-test-deploy:
+    runs-on: self-hosted  # 使用你本機的 runner
+
+    steps:
+    - name: 取得原始碼
+      uses: actions/checkout@v3
+
+    - name: 安裝 .NET 7 SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: 還原 NuGet 套件
+      run: dotnet restore
+
+    - name: 建置 .NET 專案
+      run: dotnet build --configuration Release
+
+    - name: 執行單元測試
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Docker 建立映像檔並推送
+      run: |
+        $tag = "${{ github.ref_name }}"
+        $image = "yourdockerhubusername/yourapp:$tag"
+        docker build -t $image .
+        docker push $image
+
+    - name: 部署至本機 Kubernetes
+      run: |
+        $tag = "${{ github.ref_name }}"
+        $image = "yourdockerhubusername/yourapp:$tag"
+        kubectl set image deployment/your-deployment your-container=$image
+        kubectl rollout status deployment/your-deployment
