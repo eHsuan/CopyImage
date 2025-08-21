@@ -27,7 +27,7 @@
                             try
                             {
                                 string fileName = Path.GetFileName(file);
-                                string targetFile = Path.Combine(target, fileName);
+                                string targetFile = MainProcess.GenerateFileName(target, fileName);
                                 File.Copy(file, targetFile);
                             }
                             catch
