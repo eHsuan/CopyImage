@@ -25,7 +25,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: 執行單元測試
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --verbosity normal
 
     - name: 建立發布資料夾
       run: |
